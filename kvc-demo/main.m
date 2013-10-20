@@ -13,8 +13,14 @@ int main(int argc, const char * argv[])
 
     @autoreleasepool {
         
-        // insert code here...
-        NSLog(@"Hello, World!");
+        NSDictionary *bestOfBeatles = @{@"paul": @{@"beatles": @"Hey Jude", @"solo": @"Jet"}};
+        
+        NSString *solo = [bestOfBeatles valueForKeyPath:@"paul.solo"];
+        NSLog(@"Paul's Best solo song is: %@", solo);
+        
+//        NSMutableDictionary *dict = [bestOfBeatles mutableCopy];
+//        [dict setValue:@"Live and Let Die" forKeyPath:@"paul.solo"];
+
         
     }
     return 0;
