@@ -5,13 +5,7 @@ class KVC < SimpleDelegator
   def for_path(path)
     segments = path.split('.')
 
-    value = self
-    while segments.size > 0
-      current = segments.shift
-      value = value[current]
-    end
-
-    value
+    segments.inject(self) { |value, s| value[s] }
   end
 
 end
