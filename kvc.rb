@@ -5,7 +5,17 @@ class KVC < SimpleDelegator
   def for_path(path)
     segments = path.split('.')
 
-    segments.inject(self) { |value, s| value[s] }
+    segments.inject(self) do |value, s|
+      if !value.respond_to?(:has_key?)
+        raise ArgumentError.new("Expected #{value} to respond to has_key?")
+      end
+
+      if value.has_key?(s)
+        value[s]
+      else
+        raise KeyError.new("Missing key #{s}")
+      end
+    end
   end
 
 end
@@ -29,6 +39,14 @@ if defined?(RSpec)
       expect(obj.size).to eq(2)
       expect(obj.keys).to eq(['foo', 'bar'])
       expect(obj.map { |k, v| k }).to eq(['foo', 'bar'])
+    end
+
+    it "raises KeyError when a path segment isn't found" do
+      expect { obj.for_path('bar.quux') }.to raise_exception(KeyError)
+    end
+
+    it "doesn't traverse objects without has_key?" do
+      expect { obj.for_path('foo.quux') }.to raise_exception(ArgumentError)
     end
 
   end
